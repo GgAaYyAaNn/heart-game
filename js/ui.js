@@ -1,12 +1,8 @@
 import Player from "./player.js";
-import { GameEngine, NUMBER_OF_GUESSES, SCORE_PER_GUESS } from "./gameEngine.js";
-import {heartApi} from "./heartApi.js";
+import { GameEngine, SCORE_PER_GUESS } from "./gameEngine.js";
+import { heartApi } from "./heartApi.js";
 
 const UI = (() => {
-    let remainingGuesses = 0;
-    let guessedCorrectly = 0;
-    let currentHeartsCount = 0;
-
     const gameSection = document.getElementById("game");
     const scoreELe = document.getElementById("score");
     const userEle = document.getElementById("user");
@@ -64,9 +60,7 @@ const UI = (() => {
     backtoMenuBtn.className = "btn btn-2 btn-small";
     backtoMenuBtn.innerText = "Back to main menu";
     backtoMenuBtn.addEventListener("click", () => {
-        if (confirm("Do you want to go back to the main menu?")) {
-            showMainMenu();
-        }
+        showMainMenu();
     })
 
     const anotherChanceSection = document.getElementById("another-chance");
@@ -90,14 +84,35 @@ const UI = (() => {
     `;
     logoutButton.addEventListener("click", logoutUser);
 
-    window.addEventListener("auth-changed", updatePlayerStats);
-
     const loadingSpinner = document.createElement("span");
     loadingSpinner.className = "loader";
 
     let anotherChanceAnswer = null;
     document.getElementById("another-chance-confirm-btn").addEventListener("click", ()=>{
         confirmAnotherChance()
+    })
+
+    // login events
+    window.addEventListener("auth-changed", updatePlayerStats);
+
+    // game events
+    window.addEventListener("tile-guessed", (event)=>{
+        let remainingGuesses = event.detail.remainingGuesses;
+        let guessedCorrectly = event.detail.guessedCorrectly;
+
+        if (guessedCorrectly){
+            Player.incrementScore(guessedCorrectly * SCORE_PER_GUESS);
+            updatePlayerStats();
+        }
+        remainingGuessesText.innerText = `You have ${remainingGuesses} ${remainingGuesses === 1 ? "guess" : "guesses"} remaining`;
+    })
+    window.addEventListener("game-over", ()=>{
+        headerText.innerText = "Oops! You failed!"
+        headerText.insertAdjacentElement("afterend", anotherChanceBtn);
+    })
+    window.addEventListener("game-won", ()=>{
+        headerText.innerText = "You won!";
+        headerText.insertAdjacentElement("afterend", playAgainBtn);
     })
 
     function showMainMenu() {
@@ -115,46 +130,16 @@ const UI = (() => {
     }
 
     function showGame() {
-        remainingGuesses = NUMBER_OF_GUESSES;
-        guessedCorrectly = 0;
         clearUI();
-
-        remainingGuessesText.innerText = `You have ${remainingGuesses} ${remainingGuesses === 1 ? "guess" : "guesses"} remaining`;
-
-        let { tiles, heartsCount } = GameEngine.generateNewGame();
-        currentHeartsCount = heartsCount;
-        tiles.forEach(tile => {
+        GameEngine.generateNewGame();
+        GameEngine.getTiles().forEach(tile=>{
             heartSection.appendChild(tile);
-
-            tile.addEventListener("click", () => {
-                if (tile.revealed) return;
-                if (remainingGuesses <= 0) return;
-                if (guessedCorrectly >= heartsCount) return;
-
-                tile.reveal();
-
-                if (tile.guessedCorrectly) {
-                    guessedCorrectly++;
-                    Player.incrementScore(guessedCorrectly * SCORE_PER_GUESS);
-                    updatePlayerStats();
-
-                    if(guessedCorrectly >= heartsCount){
-                        headerText.innerText = "You won!";
-                        headerText.insertAdjacentElement("afterend", playAgainBtn);
-                    }
-
-                } else {
-                    remainingGuesses--;
-                    remainingGuessesText.innerText = `You have ${remainingGuesses} ${remainingGuesses === 1 ? "guess" : "guesses"} remaining`;
-                    if (remainingGuesses <= 0) {
-                        headerText.innerText = "Oops! You failed!"
-                        headerText.insertAdjacentElement("afterend", anotherChanceBtn);
-                    }
-                }
-            })
         })
 
-        headerText.innerText = `Find all the hidden ${heartsCount} hearts`;
+        let remainingGuesses = GameEngine.getRemainingGuesses()
+        remainingGuessesText.innerText = `You have ${remainingGuesses} ${remainingGuesses === 1 ? "guess" : "guesses"} remaining`;
+
+        headerText.innerText = `Find all the hidden ${GameEngine.getHeartCount()} hearts`;
 
         let controls = document.createElement("div");
         controls.className = "controls";
@@ -221,13 +206,14 @@ const UI = (() => {
             anotherChanceSection.style.display = "none";
             document.querySelector("#another-chance img").src = "";
 
-            remainingGuesses = NUMBER_OF_GUESSES;
+            GameEngine.resetRemainingGuesses();
+            let remainingGuesses = GameEngine.getRemainingGuesses();
             remainingGuessesText.innerText = `You have ${remainingGuesses} ${remainingGuesses === 1 ? "guess" : "guesses"} remaining`;
-            headerText.innerText = `Find all the hidden ${currentHeartsCount} hearts`;
+            headerText.innerText = `Find all the hidden ${GameEngine.getHeartCount()} hearts`;
 
             gameSection.removeChild(anotherChanceBtn);
 
-            alert(`Your answer is correct. You are given ${NUMBER_OF_GUESSES} chances.`)
+            alert(`Your answer is correct. You are given ${remainingGuesses} chances.`)
         }else{
             alert("Your answer is not correct!")
         }
