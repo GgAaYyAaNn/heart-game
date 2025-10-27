@@ -1,0 +1,219 @@
+*{
+padding: 0;
+margin: 0;
+}
+body{
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.5rem;
+}
+a{
+    text-decoration: none;
+}
+img{
+    width: 100%;
+    height: 100%;
+}
+
+.btn{
+    padding: 0.5rem 3rem;
+    border: 0.5rem solid black;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-1{
+    color: white;
+    background-color: #49EE3F;
+    border: 0.5rem solid #11B608;
+    font-size: 3rem;
+}
+.btn-1:hover{
+    background-color: #11B608;
+    border: 0.5rem solid #49EE3F;
+}
+.btn-2{
+    color: white;
+    background-color: #51ABF1;
+    border: 0.5rem solid #0078D7;
+    font-size: 3rem;
+}
+.btn-2:hover{
+    background-color: #0078D7;
+    border: 0.5rem solid #51ABF1;
+}
+.btn-3{
+    color: white;
+    background-color: #cf6a0c;
+    border: 0.5rem solid #8a4607;
+    font-size: 3rem;
+}
+.btn-3:hover{
+    background-color: #8a4607;
+    border: 0.5rem solid #cf6a0c;
+}
+.btn-small{
+    padding: 0.5rem 1rem;
+    font-size: 1.3rem;
+    border-width: 0.2rem;
+}
+.btn-small:hover{
+    border-width: 0.2rem;
+}
+.py-1{
+    padding: 0.5rem 0;
+}
+.px-1{
+    padding: 0 0.5rem;
+}
+.text-center{
+    text-align: center;
+}
+.container{
+    max-width: 700px;
+    margin: 3rem auto auto;
+    border: 1px solid black;
+    position: relative;
+    padding: 3rem;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3rem;
+}
+header #user{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+header #user img{
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    margin: 0 0.5rem;
+}
+
+.title{
+    font-size: 5rem;
+    margin: 4rem 0 1rem 0;
+    font-weight: bold;
+    line-height: 4rem;
+}
+
+#game{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#game h1{
+    margin: 3rem 0 1rem 0;
+}
+
+#game .hearts{
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+}
+#game .hearts img{
+    cursor: pointer;
+    height: 100px;
+    width: 100px;
+
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+}
+#game .hearts img.flipping {
+    transform: rotateY(360deg);
+}
+#game .controls{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+
+#another-chance{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    
+}
+#another-chance .content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 1.5rem;
+}
+#another-chance h1{
+    text-align: center;
+    margin: 5rem 1rem 1rem 1rem;
+    line-height: 3rem;
+    font-size: 2.5rem;
+}
+#another-chance img{
+    width: 600px;
+    height: 300px;
+    text-align: center;
+    border: none;
+}
+#another-chance input,
+#another-chance button{
+    padding: 0.3rem 0.5rem;
+}
+#another-chance .close-btn{
+    position: absolute;
+    right: 0;
+    margin: 1rem;
+    cursor: pointer;
+    
+}
+#scoreboard{
+    text-align: center;
+    margin-top: 2rem;
+}
+#scoreboard h1{
+    margin: 1rem;
+}
+#scoreboard table{
+    table-layout: fixed;
+    width: 90%;
+    margin: 0 auto 2rem auto;
+    text-align: center;
+}
+
+.login-btn, .logout-btn{
+    cursor: pointer;
+}
+
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.loader-lg{
+    width: 48px;
+    height: 48px;
+    border: 5px solid #000;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
