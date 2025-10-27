@@ -1,5 +1,6 @@
 import Player from "./player.js";
 import { GameEngine, NUMBER_OF_GUESSES, SCORE_PER_GUESS } from "./gameEngine.js";
+import {heartApi} from "./heartApi.js";
 
 const UI = (() => {
     let remainingGuesses = 0;
@@ -207,15 +208,11 @@ const UI = (() => {
     }
     async function giveAnotherChance() {
         anotherChanceSection.style.display = "";
-        document.querySelector("#another-chance img").src = "";
         document.getElementById("another-chance-input").value = "";
 
-        let resp = await fetch("https://marcconrad.com/uob/heart/api.php");
-        let data = JSON.parse(await resp.text());
-        let img = data["question"];
-        anotherChanceAnswer = parseInt(data["solution"]);
-
-        document.querySelector("#another-chance img").src = img;
+        const {imgSrc, solution} = await heartApi.getGame();
+        anotherChanceAnswer = parseInt(solution);
+        document.querySelector("#another-chance img").src = imgSrc;
     }
 
     function confirmAnotherChance(){
@@ -273,10 +270,6 @@ const UI = (() => {
             updatePlayerStats();
         })
     }
-
-    Player.getTopPlayers().then(players=>{
-        console.log("top players", players)
-    })
 
     return {
         init: ()=>{

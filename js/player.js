@@ -1,4 +1,4 @@
-import {auth, db, firebaseAuth, firebaseDB} from "./firebaseConfig.js";
+import {auth, db, firebaseAuth, firebaseDB, provider} from "./firebaseConfig.js";
 
 const Player = (() => {
     let score = 0;
@@ -20,7 +20,7 @@ const Player = (() => {
             const snapshot = await firebaseDB.get(userRef);
             if (snapshot.exists()) {
                 const scoreData = snapshot.val();
-                console.log("user's score", scoreData);
+                // console.log("user's score", scoreData);
                 score = scoreData.score;
             } else {
                 score = 0;
