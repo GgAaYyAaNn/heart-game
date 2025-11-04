@@ -1,6 +1,7 @@
 import Player from "./player.js";
 import { GameEngine, SCORE_PER_GUESS } from "./gameEngine.js";
 import { heartApi } from "./heartApi.js";
+import { audioManager } from "./audioManager.js";
 
 const UI = (() => {
     const gameSection = document.getElementById("game");
@@ -23,6 +24,7 @@ const UI = (() => {
     playBtn.className = "btn btn-1";
     playBtn.innerText = "Play";
     playBtn.addEventListener("click", () => {
+        audioManager.playBackground();
         showGame();
     })
 
@@ -103,16 +105,24 @@ const UI = (() => {
         if (guessedCorrectly){
             Player.incrementScore(guessedCorrectly * SCORE_PER_GUESS);
             updatePlayerStats();
+
+            audioManager.correctGuess();
+        }else{
+            audioManager.wrongGuess();
         }
         remainingGuessesText.innerText = `You have ${remainingGuesses} ${remainingGuesses === 1 ? "guess" : "guesses"} remaining`;
     })
     window.addEventListener("game-over", ()=>{
         headerText.innerText = "Oops! You failed!"
         headerText.insertAdjacentElement("afterend", anotherChanceBtn);
+
+        audioManager.gameover();
     })
     window.addEventListener("game-won", ()=>{
         headerText.innerText = "You won!";
         headerText.insertAdjacentElement("afterend", playAgainBtn);
+
+        audioManager.victory();
     })
 
     function showMainMenu() {
