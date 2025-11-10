@@ -85,11 +85,13 @@ const Player = (() => {
                 return [];
             }
 
-            const data = snapshot.val();
-            const players = Object.values(data);
+            const players = [];
+            snapshot.forEach(childSnapshot => {
+                players.push({ id: childSnapshot.key, ...childSnapshot.val() });
+            });
 
-            // Firebase returns lowest-to-highest, so reverse
-            return players.reverse();
+            players.reverse();
+            return players;
         } catch (error) {
             console.error("failed to get leaderboard:", error);
             return [];
